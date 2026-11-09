@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Формы авто</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#1b2130;--muted:#667085;
+  --line:#e5e9f0;--accent:#2f5bea;--accent-soft:#e8eeff;
+  --danger:#d92d20;--ok:#12b76a;--radius:12px;
+  --shadow:0 4px 12px rgba(0,0,0,.05);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+header{background:#fff;border-bottom:1px solid var(--line);padding:14px 22px;display:flex;gap:14px;position:sticky;top:0;z-index:10}
+header a{color:var(--muted);text-decoration:none;font-weight:600;padding:6px 12px;border-radius:8px}
+header a:hover{background:var(--accent-soft);color:var(--accent)}
+#app{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:26px 20px 60px}
+h1{margin:0 0 18px;font-size:26px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:20px}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--line);text-decoration:none;color:inherit;transition:.15s;display:flex;flex-direction:column;gap:6px}
+.card:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(0,0,0,.08)}
+.card img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;background:#eef1f8}
+.card .tag{display:inline-block;font-size:11px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;align-self:flex-start}
+.card h3{margin:2px 0;font-size:16px}
+.card p{margin:0;font-size:13.5px;color:var(--muted)}
+.card .views{font-size:12.5px;color:var(--muted);margin-top:4px}
+.toolbar{display:flex;gap:10px;margin-bottom:8px}
+.toolbar input,.toolbar select{padding:9px 12px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff}
+.toolbar input{flex:1}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:.15s;font-size:14px}
+.btn:hover{background:#fafbff}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:#2448c8}
+.btn.danger{color:var(--danger);border-color:#f3c3be}
+.btn.sm{padding:6px 10px;font-size:12.5px;border-radius:8px}
+.form-grid{display:flex;flex-direction:column;gap:14px;max-width:640px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:13px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{padding:10px 13px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+.field textarea{resize:vertical;min-height:70px}
+.form-actions{display:flex;gap:10px;margin-top:8px}
+.admin-layout{display:grid;grid-template-columns:200px 1fr;gap:22px;align-items:start}
+.admin-nav{position:sticky;top:76px;display:flex;flex-direction:column;gap:2px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:8px;box-shadow:var(--shadow)}
+.admin-nav a{padding:9px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:600;font-size:14px}
+.admin-nav a:hover,.admin-nav a.active{background:var(--accent-soft);color:var(--accent)}
+.admin-nav a.logout{margin-top:6px;border-top:1px solid var(--line);padding-top:12px;color:var(--danger)}
+.admin-nav a.logout:hover{background:#fdecea}
+.admin-content{min-width:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin:14px 0 20px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.stat .k{font-size:12.5px;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:.3px}
+.stat .v{font-size:26px;font-weight:800;margin-top:2px}
+.table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:600px}
+thead th{background:#f2f5fc;text-align:left;padding:10px 12px;font-weight:700;border-bottom:1px solid var(--line)}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafbff}
+td img{width:56px;height:40px;border-radius:6px;object-fit:cover}
+.auth-wrap{display:flex;justify-content:center;padding-top:40px}
+.auth-card{width:100%;max-width:380px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+.auth-card h2{margin:0 0 4px;font-size:20px}
+.auth-card .hint{margin:0;font-size:13px;color:var(--muted)}
+.auth-card .err{color:var(--danger);font-size:13px;margin:0;min-height:16px}
+.form-view{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start;margin-top:16px}
+.form-view img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius);background:#eef1f8}
+.form-view h1{margin:6px 0 10px;font-size:26px}
+.form-view .lead{color:var(--muted);margin:0 0 14px}
+.form-view .meta{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-bottom:14px}
+.form-view .desc{white-space:pre-wrap;font-size:15px;line-height:1.7}
+.back{display:inline-block;margin-bottom:16px;color:var(--accent);text-decoration:none;font-weight:600}
+.cat-list{display:flex;flex-direction:column;gap:8px;max-width:520px;margin-top:14px}
+.cat-row{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.cat-row .name{font-weight:600}
+.cat-row .cnt{color:var(--muted);font-size:12.5px;margin-left:6px}
+.add-cat{display:flex;gap:8px;max-width:520px;margin-bottom:6px}
+.add-cat input{flex:1;padding:10px 13px;border:1px solid var(--line);border-radius:9px;font:inherit}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);padding:11px 20px;border-radius:10px;background:#333;color:#fff;font-weight:600;font-size:14px;opacity:0;transition:.3s;z-index:999;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--ok)}
+.toast.error{background:var(--danger)}
+.toast.info{background:var(--accent)}
+@media (max-width:900px){.admin-layout{grid-template-columns:1fr}.admin-nav{position:static;flex-direction:row;overflow-x:auto}.admin-nav a.logout{margin-top:0;border-top:none;padding-top:9px}.form-view{grid-template-columns:1fr}}
+@media (max-width:560px){.toolbar{flex-direction:column}.toolbar input,.toolbar select{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <a href="#/" id="nav-home">Каталог</a>
+  <a href="#/admin" id="nav-admin">Админка</a>
+</header>
+<main id="app">
+  <div class="empty"><h1>Загрузка…</h1></div>
+</main>
+<script>const app = document.getElementById('app');
+const K = { forms:'cf_forms', cats:'cf_categories', nextId:'cf_nextId', admin:'cf_admin', initialized:'cf_initialized', authed:'cf_authed' };
+const PER_PAGE = 6;
+
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function now(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear(); }
+function toast(msg,type){ type=type||'info'; const el=document.createElement('div'); el.className='toast '+type; el.textContent=msg; document.body.appendChild(el); requestAnimationFrame(()=>el.classList.add('show')); setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); },2600); }
+function ph(text,color){ color=color||'#2f5bea'; const svg='<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="800" height="500" fill="'+color+'"/><text x="400" y="260" fill="#fff" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle">'+esc(text)+'</text></svg>'; return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); }
+
+async function hashPassword(pwd){
+  try{
+    if(window.crypto&&crypto.subtle&&crypto.subtle.digest){
+      const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pwd));
+      return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+  }catch(e){}
+  let h1=0xdeadbeef,h2=0x41c6ce57;
+  for(let i=0;i<pwd.length;i++){ const ch=pwd.charCodeAt(i); h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return 'fb'+(h2>>>0).toString(16)+(h1>>>0).toString(16);
+}
+function readFile(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(file); }); }
+function validateImage(file){ const ok=['image/jpeg','image/png','image/webp']; if(!ok.includes(file.type)) return 'Недопустимый формат.'; if(file.size>500*1024) return 'Файл больше 500 КБ.'; return null; }
+
+function getForms(){ try{ return JSON.parse(localStorage.getItem(K.forms)||'[]'); }catch(e){ return []; } }
+function setForms(arr){ try{ localStorage.setItem(K.forms,JSON.stringify(arr)); }catch(e){ toast('Превышен лимит хранилища.','error'); throw e; } }
+function getCats(){ try{ return JSON.parse(localStorage.getItem(K.cats)||'[]'); }catch(e){ return []; } }
+function setCats(arr){ try{ localStorage.setItem(K.cats,JSON.stringify(arr)); }catch(e){ toast('Ошибка сохранения','error'); } }
+function nextId(){ const n=+(localStorage.getItem(K.nextId)||'1'); localStorage.setItem(K.nextId,n+1); return n; }
+function isAuthed(){ return sessionStorage.getItem(K.authed)==='1'; }
+
+const SEED = [
+  { title:'Седан', category:'Легковые', color:'#2f5bea', short:'Классический кузов с отдельным багажником', desc:'Седан — трёхобъёмный кузов.\nПримеры: Toyota Camry, Hyundai Sonata.' },
+  { title:'Хэтчбек', category:'Легковые', color:'#12b76a', short:'Кузов с дверью в задней стенке', desc:'Хэтчбек — двухобъёмный кузов.\nПримеры: Volkswagen Golf.' },
+  { title:'Универсал', category:'Легковые', color:'#f79009', short:'Удлинённая крыша и большой багажник', desc:'Универсал — удлинённая версия седана.\nПримеры: Skoda Octavia Combi.' },
+  { title:'Купе', category:'Легковые', color:'#7a5af8', short:'Двухдверный спортивный кузов', desc:'Купе — двухдверный кузов.\nПримеры: Toyota Supra.' },
+  { title:'Внедорожник (SUV)', category:'Внедорожники', color:'#d92d20', short:'Высокий кузов с полным приводом', desc:'Внедорожник — высокий кузов.\nПримеры: Toyota Land Cruiser.' },
+  { title:'Пикап', category:'Грузовые', color:'#475467', short:'Кабина + открытая платформа', desc:'Пикап — грузопассажирский кузов.\nПримеры: Toyota Hilux.' }
+];
+
+async function init(){
+  if(!localStorage.getItem(K.initialized)){
+    setCats(['Легковые','Внедорожники','Грузовые']);
+    const forms=SEED.map((s,i)=>({
+      id:i+1, title:s.title, category:s.category,
+      short_description:s.short, description:s.desc,
+      main_image:ph(s.title,s.color),
+      images:[ph(s.title+' — вид 1',s.color), ph(s.title+' — вид 2',s.color)],
+      views:Math.floor(Math.random()*40)+3,
+      created_at:now(), updated_at:now()
+    }));
+    setForms(forms);
+    localStorage.setItem(K.nextId, forms.length+1);
+    const hash=await hashPassword('admin123');
+    localStorage.setItem(K.admin, JSON.stringify({ login:'admin', hash }));
+    localStorage.setItem(K.initialized,'1');
+  }
+  route();
+}
+
+function route(){
+  const path = location.hash.slice(1) || '/';
+  const parts = path.split('/').filter(Boolean);
+
+  document.querySelectorAll('header a').forEach(a=>a.classList.remove('active'));
+  if(parts[0]==='admin') document.getElementById('nav-admin').classList.add('active');
+  else document.getElementById('nav-home').classList.add('active');
+  window.scrollTo(0,0);
+
+  if(parts[0]==='form' && parts[1]){ renderForm(+parts[1]); return; }
+  if(parts[0]==='admin'){
+    if(parts[1]==='login'){ renderLogin(); return; }
+    if(parts[1]==='logout'){ sessionStorage.removeItem(K.authed); toast('Вы вышли','success'); location.hash='#/'; return; }
+    if(!isAuthed()){ location.hash='#/admin/login'; return; }
+    if(parts[1]==='forms'){ renderAdminForms(); return; }
+    if(parts[1]==='categories'){ renderAdminCategories(); return; }
+    if(parts[1]==='form' && parts[2]==='add'){ renderAdminForm(null); return; }
+    if(parts[1]==='form' && parts[2]==='edit'){ renderAdminForm(+parts[3]); return; }
+    renderAdminDashboard(); return;
+  }
+  renderHome();
+}
+
+let state={q:'',cat:'',page:1};
+
+function renderHome(){
+  state={q:'',cat:'',page:1};
+  app.innerHTML='<h1>Справочник форм автомобилей</h1>'+
+    '<div class="toolbar"><input id="q" placeholder="🔍 Поиск по названию…"><select id="catSel"></select></div>'+
+    '<div id="list"></div>';
+  document.getElementById('catSel').innerHTML='<option value="">Все категории</option>'+
+    getCats().map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+  document.getElementById('q').addEventListener('input',e=>{ state.q=e.target.value; state.page=1; renderList(); });
+  document.getElementById('catSel').addEventListener('change',e=>{ state.cat=e.target.value; state.page=1; renderList(); });
+  document.getElementById('list').addEventListener('click',e=>{
+    const b=e.target.closest('[data-page]'); if(!b||b.disabled) return;
+    state.page=+b.dataset.page; renderList();
+  });
+  renderList();
+}
+
+function renderList(){
+  const q=state.q.trim().toLowerCase(), cat=state.cat;
+  const filtered=getForms().filter(f=>{
+    const mq=!q||(f.title||'').toLowerCase().includes(q);
+    const mc=!cat||f.category===cat;
+    return mq&&mc;
+  }).sort((a,b)=>b.id-a.id);
+
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PER_PAGE));
+  if(state.page>totalPages) state.page=totalPages;
+  const start=(state.page-1)*PER_PAGE;
+  const items=filtered.slice(start,start+PER_PAGE);
+  const list=document.getElementById('list');
+
+  if(!items.length){ list.innerHTML='<div class="empty"><h2>Ничего не найдено</h2></div>'; return; }
+
+  let html='<div class="grid">';
+  items.forEach(f=>{
+    html+='<a class="card" href="#/form/'+f.id+'">'+
+      '<img src="'+(f.main_image||ph('Нет фото'))+'" alt="'+esc(f.title)+'">'+
+      '<span class="tag">'+esc(f.category)+'</span>'+
+      '<h3>'+esc(f.title)+'</h3>'+
+      '<p>'+esc(f.short_description||'')+'</p>'+
+      '<div class="views">👁 '+(f.views||0)+' просмотров</div></a>';
+  });
+  html+='</div>';
+  if(totalPages>1){
+    html+='<div style="display:flex;gap:6px;justify-content:center;margin-top:22px">';
+    for(let i=1;i<=totalPages;i++){
+      html+='<button class="btn sm '+(i===state.page?'primary':'')+'" data-page="'+i+'">'+i+'</button>';
+    }
+    html+='</div>';
+  }
+  list.innerHTML=html;
+}
+
+function renderForm(id){
+  const forms=getForms(), i=forms.findIndex(f=>f.id===id);
+  if(i===-1){ app.innerHTML='<div class="empty"><h2>Запись не найдена</h2><p><a href="#/" class="btn">← Назад</a></p></div>'; return; }
+  forms[i].views=(forms[i].views||0)+1; setForms(forms);
+  const f=forms[i];
+  app.innerHTML='<a href="#/" class="back">← Назад к каталогу</a>'+
+    '<div class="form-view"><div><img src="'+(f.main_image||ph('Нет фото'))+'" alt="'+esc(f.title)+'"></div>'+
+    '<div><span class="tag">'+esc(f.category)+'</span><h1>'+esc(f.title)+'</h1>'+
+    '<p class="lead">'+esc(f.short_description||'')+'</p>'+
+    '<div class="meta"><span>👁 '+f.views+'</span><span>📅 '+esc(f.created_at)+'</span></div>'+
+    '<div class="desc">'+esc(f.description||'')+'</div></div></div>';
+}
+
+function renderLogin(){
+  app.innerHTML='<div class="auth-wrap"><form class="auth-card" id="loginForm">'+
+    '<h2>Вход</h2><p class="hint">admin / admin123</p>'+
+    '<div class="field"><label>Логин</label><input name="login" required autofocus></div>'+
+    '<div class="field"><label>Пароль</label><input name="password" type="password" required></div>'+
+    '<button class="btn primary">Войти</button><p class="err" id="err"></p></form></div>';
+  document.getElementById('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const login=(fd.get('login')||'').toString().trim();
+    const password=(fd.get('password')||'').toString();
+    const err=document.getElementById('err'); err.textContent='';
+    const admin=JSON.parse(localStorage.getItem(K.admin)||'null');
+    if(!admin){ err.textContent='Админ не настроен.'; return; }
+    const hash=await hashPassword(password);
+    if(login===admin.login && hash===admin.hash){
+      sessionStorage.setItem(K.authed,'1');
+      toast('Добро пожаловать!','success');
+      location.hash='#/admin';
+    } else { err.textContent='Неверный логин или пароль'; }
+  });
+}
+
+function adminShell(content,active){
+  const items=[['#/admin','Дашборд','dash'],['#/admin/forms','Записи','forms'],['#/admin/categories','Категории','cats']];
+  let nav='';
+  items.forEach(([h,l,k])=>{ nav+='<a href="'+h+'" class="'+(active===k?'active':'')+'">'+l+'</a>'; });
+  return '<div class="admin-layout"><aside class="admin-nav">'+nav+'<a href="#/admin/logout" class="logout">Выйти</a></aside><div class="admin-content">'+content+'</div></div>';
+}
+
+function renderAdminDashboard(){
+  const forms=getForms(), cats=getCats();
+  const tv=forms.reduce((s,f)=>s+(f.views||0),0);
+  const content='<h1>Дашборд</h1><div class="stats">'+
+    '<div class="stat"><div class="k">Форм</div><div class="v">'+forms.length+'</div></div>'+
+    '<div class="stat"><div class="k">Просмотров</div><div class="v">'+tv+'</div></div>'+
+    '<div class="stat"><div class="k">Категорий</div><div class="v">'+cats.length+'</div></div></div>'+
+    '<a href="#/admin/form/add" class="btn primary">+ Добавить запись</a> '+
+    '<button class="btn danger" id="resetBtn">Сбросить демо</button>';
+  app.innerHTML=adminShell(content,'dash');
+  document.getElementById('resetBtn').addEventListener('click',async()=>{
+    if(!confirm('Сбросить все данные?')) return;
+    [K.forms,K.cats,K.nextId,K.admin,K.initialized].forEach(k=>localStorage.removeItem(k));
+    sessionStorage.removeItem(K.authed);
+    await init();
+    toast('Демо восстановлено','success');
+  });
+}
+
+function renderAdminForms(){
+  const forms=[...getForms()].sort((a,b)=>b.id-a.id);
+  let rows='';
+  forms.forEach(f=>{
+    rows+='<tr><td><img src="'+(f.main_image||ph('—'))+'"></td>'+
+      '<td><b>'+esc(f.title)+'</b></td><td>'+esc(f.category)+'</td><td>'+(f.views||0)+'</td>'+
+      '<td>'+esc(f.created_at)+'</td>'+
+      '<td><a href="#/form/'+f.id+'" class="btn sm">👁</a> <a href="#/admin/form/edit/'+f.id+'" class="btn sm">✎</a> <button class="btn sm danger" data-del="'+f.id+'">🗑</button></td></tr>';
+  });
+  const content='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h1>Записи ('+forms.length+')</h1><a href="#/admin/form/add" class="btn primary">+ Добавить</a></div>'+
+    '<div class="table-wrap"><table><thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Просм.</th><th>Дата</th><th>Действия</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  app.innerHTML=adminShell(content,'forms');
+  app.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{
+    const id=+b.dataset.del, f=getForms().find(x=>x.id===id);
+    if(!f||!confirm('Удалить «'+f.title+'»?')) return;
+    setForms(getForms().filter(x=>x.id!==id));
+    toast('Удалено','success');
+    renderAdminForms();
+  }));
+}
+
+function renderAdminForm(id){
+  const isEdit=id!=null;
+  const existing=isEdit?getForms().find(f=>f.id===id):null;
+  if(isEdit&&!existing){ app.innerHTML=adminShell('<div class="empty"><h2>Запись не найдена</h2></div>','forms'); return; }
+  const cats=getCats();
+  if(!cats.length){ app.innerHTML=adminShell('<div class="empty"><h2>Сначала создайте категорию</h2><p><a href="#/admin/categories" class="btn primary">Перейти</a></p></div>','forms'); return; }
+
+  let mainImage=existing?existing.main_image:null;
+  let gallery=existing?[...(existing.images||[])]:[];
+
+  const content='<h1>'+(isEdit?'Редактирование':'Новая запись')+'</h1>'+
+    '<form class="form-grid" id="fForm">'+
+    '<div class="field"><label>Название *</label><input name="title" required value="'+esc(existing?existing.title:'')+'"></div>'+
+    '<div class="field"><label>Категория *</label><select name="category" required>'+
+    cats.map(c=>'<option value="'+esc(c)+'"'+(existing&&existing.category===c?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select></div>'+
+    '<div class="field"><label>Краткое описание</label><textarea name="short_description">'+esc(existing?existing.short_description||'':'')+'</textarea></div>'+
+    '<div class="field"><label>Полное описание</label><textarea name="description" rows="6">'+esc(existing?existing.description||'':'')+'</textarea></div>'+
+    '<div class="field"><label>Главное фото</label><input type="file" name="mainFile" accept="image/jpeg,image/png,image/webp"><div id="mainPreview"></div></div>'+
+    '<div class="field"><label>Галерея</label><input type="file" name="galleryFiles" accept="image/jpeg,image/png,image/webp" multiple><div id="galleryPreview"></div></div>'+
+    '<div class="form-actions"><button class="btn primary">'+(isEdit?'Сохранить':'Добавить')+'</button><a href="#/admin/forms" class="btn">Отмена</a></div>'+
+    '</form>';
+  app.innerHTML=adminShell(content,'forms');
+
+  function renderPreviews(){
+    const mp=document.getElementById('mainPreview');
+    mp.innerHTML=mainImage?'<div style="margin-top:6px;position:relative;display:inline-block"><img src="'+mainImage+'" style="width:110px;border-radius:8px;border:1px solid var(--line)"><button type="button" id="rmMain" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:none;background:var(--danger);color:#fff;cursor:pointer">×</button></div>':'<p style="color:var(--muted);font-size:13px;margin:4px 0 0">Не выбрано</p>';
+    const rm=document.getElementById('rmMain'); if(rm) rm.onclick=()=>{ mainImage=null; renderPreviews(); };
+
+    const gp=document.getElementById('galleryPreview');
+    gp.innerHTML=gallery.map((src,i)=>'<div style="position:relative;display:inline-block;margin:6px 6px 0 0"><img src="'+src+'" style="width:90px;height:66px;object-fit:cover;border-radius:8px;border:1px solid var(--line)"><button type="button" data-rm="'+i+'" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:none;background:var(--danger);color:#fff;cursor:pointer;font-size:12px">×</button></div>').join('');
+    gp.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ gallery.splice(+b.dataset.rm,1); renderPreviews(); });
+  }
+  renderPreviews();
+
+  document.querySelector('[name="mainFile"]').addEventListener('change',async e=>{
+    const file=e.target.files[0]; if(!file) return;
+    const err=validateImage(file); if(err){ toast(err,'error'); e.target.value=''; return; }
+    mainImage=await readFile(file); renderPreviews();
+  });
+  document.querySelector('[name="galleryFiles"]').addEventListener('change',async e=>{
+    for(const file of [...e.target.files]){
+      const err=validateImage(file); if(err){ toast(file.name+': '+err,'error'); continue; }
+      gallery.push(await readFile(file));
+    }
+    e.target.value=''; renderPreviews();
+  });
+
+  document.getElementById('fForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const data={
+      title:(fd.get('title')||'').toString().trim(),
+      category:(fd.get('category')||'').toString(),
+      short_description:(fd.get('short_description')||'').toString().trim(),
+      description:(fd.get('description')||'').toString().trim()
+    };
+    if(!data.title){ toast('Введите название','error'); return; }
+    const forms=getForms();
+    if(isEdit){
+      const i=forms.findIndex(f=>f.id===id);
+      forms[i]={...forms[i],...data,main_image:mainImage,images:gallery,updated_at:now()};
+    } else {
+      forms.push({id:nextId(),...data,main_image:mainImage,images:gallery,views:0,created_at:now(),updated_at:now()});
+    }
+    try{ setForms(forms); }catch(e){ return; }
+    toast(isEdit?'Сохранено':'Добавлено','success');
+    location.hash='#/admin/forms';
+  });
+}
+
+function renderAdminCategories(){
+  const cats=getCats(), forms=getForms();
+  const listHtml=cats.map(c=>{
+    const cnt=forms.filter(f=>f.category===c).length;
+    return '<div class="cat-row"><div><span class="name">'+esc(c)+'</span><span class="cnt">('+cnt+')</span></div>'+
+      '<div><button class="btn sm" data-rename="'+esc(c)+'">✎</button> <button class="btn sm danger" data-rmcat="'+esc(c)+'">🗑</button></div></div>';
+  }).join('')||'<div class="empty">Пока нет категорий</div>';
+  const content='<h1>Категории</h1>'+
+    '<form class="add-cat" id="addCat"><input name="name" placeholder="Название новой категории" required><button class="btn primary">Добавить</button></form>'+
+    '<div class="cat-list">'+listHtml+'</div>';
+  app.innerHTML=adminShell(content,'cats');
+
+  document.getElementById('addCat').addEventListener('submit',e=>{
+    e.preventDefault();
+    const name=e.target.querySelector('[name="name"]').value.trim();
+    if(!name) return;
+    const c=getCats();
+    if(c.includes(name)){ toast('Такая уже есть','error'); return; }
+    c.push(name); setCats(c); renderAdminCategories();
+  });
+  app.querySelectorAll('[data-rename]').forEach(b=>b.addEventListener('click',()=>{
+    const oldName=b.dataset.rename;
+    const nn=prompt('Новое название:',oldName);
+    if(!nn||nn.trim()===oldName) return;
+    const trimmed=nn.trim();
+    setCats(getCats().map(c=>c===oldName?trimmed:c));
+    setForms(getForms().map(f=>f.category===oldName?{...f,category:trimmed}:f));
+    renderAdminCategories();
+  }));
+  app.querySelectorAll('[data-rmcat]').forEach(b=>b.addEventListener('click',()=>{
+    const name=b.dataset.rmcat;
+    const cnt=getForms().filter(f=>f.category===name).length;
+    if(cnt>0){ toast('Нельзя: в категории '+cnt+' записей','error'); return; }
+    if(!confirm('Удалить «'+name+'»?')) return;
+    setCats(getCats().filter(c=>c!==name)); renderAdminCategories();
+  }));
+}
+
+window.addEventListener('hashchange', route);
+init();
+</script>
+</body>
+</html>
